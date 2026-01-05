@@ -1,6 +1,6 @@
 {
   "name": "monto-email-block-socials",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "monto-email compatible socials component.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "npx tsc",
+    "build": "npx tsc && mv dist/src/index.js dist/index.js && mv dist/src/index.d.ts dist/index.d.ts && mv dist/src/index.js.map dist/index.js.map 2>/dev/null || true && mv dist/src/index.d.ts.map dist/index.d.ts.map 2>/dev/null || true && rm -rf dist/src && sed -i '' 's|\\.\\./png/|\\./png/|g' dist/index.js",
     "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

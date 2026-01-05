@@ -3,9 +3,28 @@
   "compilerOptions": {
     "target": "es2015",
     "module": "esnext",
-    "lib": ["ES2016", "DOM"],
-    "outDir": "dist"
+    "lib": [
+      "ES2016",
+      "DOM"
+    ],
+    "rootDir": ".",
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "./png/*": [
+        "png/*"
+      ]
+    }
   },
-  "exclude": ["dist"]
+  "include": [
+    "src/**/*",
+    "png/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "png/**/*.js",
+    "png/**/*.d.ts",
+    "png/**/*.js.map",
+    "png/**/*.d.ts.map"
+  ]
 }
-

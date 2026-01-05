@@ -5,3 +5,9 @@ dist
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Compiled files in source directories
+png/**/*.js
+png/**/*.d.ts
+png/**/*.js.map
+png/**/*.d.ts.map
