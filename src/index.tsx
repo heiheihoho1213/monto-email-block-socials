@@ -179,6 +179,12 @@ export function Socials({ style, props }: SocialsProps) {
     return base64Map[platform] || '';
   };
 
+  // 如果有 socials 数组，直接使用 socials 数组的顺序（支持重复）
+  // 如果没有 socials 数组，使用 platforms 数组（保持向后兼容）
+  const platformsToRender = socials.length > 0
+    ? socials.map(s => s.platform)
+    : SOCIAL_PLATFORMS.filter((platform) => platforms.includes(platform));
+
   return (
     <div style={wStyle}>
       <div style={{
@@ -188,15 +194,23 @@ export function Socials({ style, props }: SocialsProps) {
         justifyContent,
         width: '100%',
       }}>
-        {SOCIAL_PLATFORMS.filter((platform) => platforms.includes(platform)).map((platform) => {
-          const config = getSocialConfig(platform);
-          const iconBase64 = getIconBase64Sync(platform, iconStyle as IconStyle);
+        {platformsToRender.map((platform, index) => {
+          // 对于 socials 数组，直接使用对应的配置
+          // 对于 platforms 数组，使用 getSocialConfig 查找配置
+          const config = socials.length > 0
+            ? socials[index]
+            : getSocialConfig(platform as SocialPlatform);
+
+          const iconBase64 = getIconBase64Sync(platform as SocialPlatform, iconStyle as IconStyle);
           const width = iconSize;
           const height = iconSize;
 
+          // 使用 index 作为 key 的一部分，以支持重复的平台
+          const iconKey = socials.length > 0 ? `social-${index}` : platform;
+
           const iconElement = iconBase64 ? (
             <img
-              key={platform}
+              key={iconKey}
               src={iconBase64}
               alt={platform}
               style={{
@@ -207,7 +221,7 @@ export function Socials({ style, props }: SocialsProps) {
             />
           ) : (
             <span
-              key={platform}
+              key={iconKey}
               style={{
                 width: `${width}px`,
                 height: `${height}px`,
@@ -228,7 +242,7 @@ export function Socials({ style, props }: SocialsProps) {
           if (config.url) {
             return (
               <a
-                key={platform}
+                key={iconKey}
                 href={config.url}
                 target="_blank"
                 rel="noopener noreferrer"
