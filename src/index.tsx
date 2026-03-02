@@ -110,28 +110,28 @@ export const SocialsPropsDefaults = {
 //   'standard': 'standard',
 // };
 
-// 导入所有文件夹的 base64 数据
+// 导入所有文件夹的 cdn url 数据
 // @ts-ignore
-import { iconBase64Map as circularDarkMap } from '../png/circular-dark/index';
+import { iconCdnUrlMap as circularDarkMap } from '../png/circular-dark/index';
 // @ts-ignore
-import { iconBase64Map as circularDynamicColorMap } from '../png/circular-dynamic-color/index';
+import { iconCdnUrlMap as circularDynamicColorMap } from '../png/circular-dynamic-color/index';
 // @ts-ignore
-import { iconBase64Map as circularLightMap } from '../png/circular-light/index';
+import { iconCdnUrlMap as circularLightMap } from '../png/circular-light/index';
 // @ts-ignore
-import { iconBase64Map as circularOutlineColorMap } from '../png/circular-outline-color/index';
+import { iconCdnUrlMap as circularOutlineColorMap } from '../png/circular-outline-color/index';
 // @ts-ignore
-import { iconBase64Map as circularOutlineDarkMap } from '../png/circular-outline-dark/index';
+import { iconCdnUrlMap as circularOutlineDarkMap } from '../png/circular-outline-dark/index';
 // @ts-ignore
-import { iconBase64Map as circularOutlineLightMap } from '../png/circular-outline-light/index';
+import { iconCdnUrlMap as circularOutlineLightMap } from '../png/circular-outline-light/index';
 // @ts-ignore
-import { iconBase64Map as glyphDarkMap } from '../png/glyph-dark/index';
+import { iconCdnUrlMap as glyphDarkMap } from '../png/glyph-dark/index';
 // @ts-ignore
-import { iconBase64Map as glyphLightMap } from '../png/glyph-light/index';
+import { iconCdnUrlMap as glyphLightMap } from '../png/glyph-light/index';
 // @ts-ignore
-import { iconBase64Map as standardMap } from '../png/standard/index';
+import { iconCdnUrlMap as standardMap } from '../png/standard/index';
 
-// 映射图标样式到 base64 数据
-const iconStyleToBase64Map: Record<IconStyle, Record<string, string>> = {
+// 映射图标样式到 cdn url 数据
+const iconStyleToCdnUrlMap: Record<IconStyle, Record<string, string>> = {
   'no-border-black': glyphDarkMap,  // 根据 ICON_STYLE_TO_DIR 映射
   'no-border-white': glyphLightMap,
   'origin-colorful': circularDynamicColorMap,
@@ -142,8 +142,6 @@ const iconStyleToBase64Map: Record<IconStyle, Record<string, string>> = {
   'with-border-line-white': circularOutlineLightMap,
   'standard': standardMap,
 };
-
-// 注意：getIconBase64 函数已移除，现在直接使用预生成的 base64 数据
 
 export function Socials({ style, props }: SocialsProps) {
   const wStyle: CSSProperties = {
@@ -171,12 +169,12 @@ export function Socials({ style, props }: SocialsProps) {
   const justifyContent = textAlign === 'center' ? 'center' : textAlign === 'right' ? 'flex-end' : 'flex-start';
 
   // 同步获取图标的 base64 数据（不使用 Hooks，兼容 SSR）
-  const getIconBase64Sync = (platform: SocialPlatform, style: IconStyle): string => {
-    const base64Map = iconStyleToBase64Map[style];
-    if (!base64Map) {
+  const getIconCdnUrlSync = (platform: SocialPlatform, style: IconStyle): string => {
+    const cdnUrlMap = iconStyleToCdnUrlMap[style];
+    if (!cdnUrlMap) {
       return '';
     }
-    return base64Map[platform] || '';
+    return cdnUrlMap[platform] || '';
   };
 
   // 如果有 socials 数组，直接使用 socials 数组的顺序（支持重复）
@@ -201,17 +199,17 @@ export function Socials({ style, props }: SocialsProps) {
             ? socials[index]
             : getSocialConfig(platform as SocialPlatform);
 
-          const iconBase64 = getIconBase64Sync(platform as SocialPlatform, iconStyle as IconStyle);
+          const iconCdnUrl = getIconCdnUrlSync(platform as SocialPlatform, iconStyle as IconStyle);
           const width = iconSize;
           const height = iconSize;
 
           // 使用 index 作为 key 的一部分，以支持重复的平台
           const iconKey = socials.length > 0 ? `social-${index}` : platform;
 
-          const iconElement = iconBase64 ? (
+          const iconElement = iconCdnUrl ? (
             <img
               key={iconKey}
-              src={iconBase64}
+              src={iconCdnUrl}
               alt={platform}
               style={{
                 width: `${width}px`,

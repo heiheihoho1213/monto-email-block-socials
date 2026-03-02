@@ -1,5 +1,4 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "es2015",
     "module": "esnext",
@@ -7,8 +6,19 @@
       "ES2016",
       "DOM"
     ],
+    "jsx": "react",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
     "rootDir": ".",
-    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "./png/*": [
@@ -22,6 +32,7 @@
   ],
   "exclude": [
     "dist",
+    "node_modules",
     "png/**/*.js",
     "png/**/*.d.ts",
     "png/**/*.js.map",
