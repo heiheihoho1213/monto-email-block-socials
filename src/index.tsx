@@ -165,8 +165,8 @@ export function Socials({ style, props }: SocialsProps) {
     };
   };
 
-  // 根据 textAlign 确定 justifyContent
-  const justifyContent = textAlign === 'center' ? 'center' : textAlign === 'right' ? 'flex-end' : 'flex-start';
+  // 根据 textAlign 确定 table 对齐方式
+  const tableAlign = textAlign === 'center' ? 'center' : textAlign === 'right' ? 'right' : 'left';
 
   // 同步获取图标的 base64 数据（不使用 Hooks，兼容 SSR）
   const getIconCdnUrlSync = (platform: SocialPlatform, style: IconStyle): string => {
@@ -183,77 +183,126 @@ export function Socials({ style, props }: SocialsProps) {
     ? socials.map(s => s.platform)
     : SOCIAL_PLATFORMS.filter((platform) => platforms.includes(platform));
 
+  // 计算每个 td 的宽度（iconSize + 左右 padding 8px）
+  const tdWidth = iconSize;
+  // 计算内层 table 的总宽度（所有 td 宽度之和）
+  const innerTableWidth = platformsToRender.length * tdWidth;
+
   return (
     <div style={wStyle}>
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '8px',
-        justifyContent,
-        width: '100%',
-      }}>
-        {platformsToRender.map((platform, index) => {
-          // 对于 socials 数组，直接使用对应的配置
-          // 对于 platforms 数组，使用 getSocialConfig 查找配置
-          const config = socials.length > 0
-            ? socials[index]
-            : getSocialConfig(platform as SocialPlatform);
-
-          const iconCdnUrl = getIconCdnUrlSync(platform as SocialPlatform, iconStyle as IconStyle);
-          const width = iconSize;
-          const height = iconSize;
-
-          // 使用 index 作为 key 的一部分，以支持重复的平台
-          const iconKey = socials.length > 0 ? `social-${index}` : platform;
-
-          const iconElement = iconCdnUrl ? (
-            <img
-              key={iconKey}
-              src={iconCdnUrl}
-              alt={platform}
-              style={{
-                width: `${width}px`,
-                height: `${height}px`,
-                display: 'block',
-              }}
-            />
-          ) : (
-            <span
-              key={iconKey}
-              style={{
-                width: `${width}px`,
-                height: `${height}px`,
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#f0f0f0',
-                borderRadius: '4px',
-                fontSize: '10px',
-                color: '#666',
-              }}
-            >
-              {platform.substring(0, 2).toUpperCase()}
-            </span>
-          );
-
-          // 如果有链接，包装在 <a> 标签中
-          if (config.url) {
-            return (
-              <a
-                key={iconKey}
-                href={config.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ display: 'inline-flex', textDecoration: 'none' }}
+      {/* 外层 table 用于居中 */}
+      <table
+        width="100%"
+        cellPadding="0"
+        cellSpacing="0"
+        border={0}
+        style={{
+          width: '100%',
+          borderCollapse: 'collapse',
+        }}
+      >
+        <tbody>
+          <tr>
+            <td align={tableAlign} style={{ padding: 0 }}>
+              {/* 内层 table 固定宽度，包含实际的图标 */}
+              <table
+                width={innerTableWidth}
+                cellPadding="0"
+                cellSpacing="0"
+                border={0}
+                align={tableAlign}
+                style={{
+                  width: `${innerTableWidth}px`,
+                  borderCollapse: 'collapse',
+                  margin: '0 auto',
+                }}
               >
-                {iconElement}
-              </a>
-            );
-          }
+                <tbody>
+                  <tr>
+                    {platformsToRender.map((platform, index) => {
+                      // 对于 socials 数组，直接使用对应的配置
+                      // 对于 platforms 数组，使用 getSocialConfig 查找配置
+                      const config = socials.length > 0
+                        ? socials[index]
+                        : getSocialConfig(platform as SocialPlatform);
 
-          return iconElement;
-        })}
-      </div>
+                      const iconCdnUrl = getIconCdnUrlSync(platform as SocialPlatform, iconStyle as IconStyle);
+                      const width = iconSize;
+                      const height = iconSize;
+
+                      // 使用 index 作为 key 的一部分，以支持重复的平台
+                      const iconKey = socials.length > 0 ? `social-${index}` : platform;
+
+                      const iconElement = iconCdnUrl ? (
+                        <img
+                          key={iconKey}
+                          src={iconCdnUrl}
+                          alt={platform}
+                          width={width}
+                          height={height}
+                          style={{
+                            width: `${width}px`,
+                            height: `${height}px`,
+                            display: 'block',
+                            border: '0',
+                          }}
+                        />
+                      ) : (
+                        <span
+                          key={iconKey}
+                          style={{
+                            width: `${width}px`,
+                            height: `${height}px`,
+                            display: 'inline-block',
+                            backgroundColor: '#f0f0f0',
+                            borderRadius: '4px',
+                            fontSize: '10px',
+                            color: '#666',
+                            textAlign: 'center',
+                            lineHeight: `${height}px`,
+                            verticalAlign: 'middle',
+                          }}
+                        >
+                          {platform.substring(0, 2).toUpperCase()}
+                        </span>
+                      );
+
+                      // 如果有链接，包装在 <a> 标签中
+                      const content = config.url ? (
+                        <a
+                          key={iconKey}
+                          href={config.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ textDecoration: 'none', display: 'inline-block' }}
+                        >
+                          {iconElement}
+                        </a>
+                      ) : (
+                        iconElement
+                      );
+
+                      return (
+                        <td
+                          key={iconKey}
+                          width={tdWidth}
+                          style={{
+                            width: `${tdWidth}px`,
+                            padding: '0px 4px',
+                            verticalAlign: 'middle',
+                          }}
+                        >
+                          {content}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }
