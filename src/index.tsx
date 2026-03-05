@@ -240,6 +240,7 @@ export function Socials({ style, props }: SocialsProps) {
                           alt={platform}
                           width={width}
                           height={height}
+                          {...({ fetchpriority: 'high' } as any)} // 使用扩展运算符绕过 TypeScript 检查
                           style={{
                             width: `${width}px`,
                             height: `${height}px`,
@@ -274,7 +275,12 @@ export function Socials({ style, props }: SocialsProps) {
                           href={config.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ textDecoration: 'none', display: 'inline-block' }}
+                          style={{
+                            textDecoration: 'none',
+                            display: 'block',
+                            lineHeight: 0,
+                            verticalAlign: 'middle',
+                          }}
                         >
                           {iconElement}
                         </a>
